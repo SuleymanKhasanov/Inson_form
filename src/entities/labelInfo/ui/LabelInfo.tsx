@@ -12,7 +12,7 @@ const LabelInfo: React.FC<LabelInfoProps> = ({
   toggleInfo,
 }) => {
   return (
-    <Flex justify="space-between" align="center" width="380px">
+    <Flex justify="space-between" align="center" width="17em">
       <Text fontWeight="bold">{labelText}</Text>
       <ToggleTip content={toggleInfo}>
         <Button size="sm" variant="ghost">

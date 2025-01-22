@@ -7,18 +7,17 @@ import {
   SelectRoot,
   SelectTrigger,
   SelectValueText,
+  Text,
 } from '@chakra-ui/react';
 import { countries } from '@/shared/data/data';
 import { useState } from 'react';
 import { IoChevronDown } from 'react-icons/io5';
 import { LabelInfo } from '@/entities/labelInfo';
 import { IoIosAdd } from 'react-icons/io';
-import { Tag } from '@/shared/components/ui/tag';
 
 type SelectCountryInputProps = {
   value: string;
   onChange: (value: string) => void;
-  onBlur: () => void;
 };
 
 const SelectCountryInput = ({
@@ -32,31 +31,22 @@ const SelectCountryInput = ({
 
   const handleSelectChange = (country: string) => {
     setInputValue(country);
-    onChange(country); // Это обновит значение в форме
+    onChange(country);
   };
 
   return (
-    <Flex align="end" gap="10px">
+    <Flex align="end" gap="2.5">
       <SelectRoot
         collection={countriesCollection}
         position="relative"
       >
         <LabelInfo
           labelText="Страна путешествий"
-          toggleInfo="Выберете город для путешествий"
+          toggleInfo="Выберете страну для путешествий"
         />
-        <SelectTrigger
-          backgroundColor={'#EBEBF2'}
-          borderRadius={'xl'}
-        >
+        <SelectTrigger backgroundColor="gray.100" borderRadius="xl">
           {inputValue ? (
-            <Tag
-              closable
-              onClick={() => setInputValue('')}
-              padding="5px"
-            >
-              {inputValue}
-            </Tag>
+            <Text>{inputValue}</Text>
           ) : (
             <SelectValueText placeholder="Выберите страну" />
           )}
@@ -76,9 +66,9 @@ const SelectCountryInput = ({
       </SelectRoot>
       <Button
         borderRadius="xl"
-        backgroundColor="#EBEBF2"
+        backgroundColor="gray.100"
         cursor="pointer"
-        _hover={{ backgroundColor: '#011368' }}
+        _hover={{ backgroundColor: 'blue.700' }}
         title="Добавить город"
       >
         <IoIosAdd color="#9B9AA8" />

@@ -1,11 +1,15 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
 import { SelectCountryInput } from '@/features/selectCountry';
 import { CoverageType } from '@/features/coverageType';
 import { Controller, useForm } from 'react-hook-form';
+import SelectBiginDate from '@/features/selectBiginDate/ui/SelectBiginDate';
+import SelectEndDate from '@/features/selectEndDate/ui/SelectEndDate';
 
 interface FormSubmitProps {
   country: string;
-  control: string;
+  coverageType: string;
+  startDate: Date | null;
+  endDate: Date | null;
 }
 
 const FirstStepForm = () => {
@@ -16,37 +20,36 @@ const FirstStepForm = () => {
   } = useForm<FormSubmitProps>();
 
   const onSubmit = (data: FormSubmitProps) => {
-    console.log(data);
+    console.log('Форма отправлена:', data);
   };
 
   return (
     <Box
       bg="#fff"
       shadow="md"
-      borderRadius="30px"
-      padding="10px"
-      width="500px"
+      borderRadius="4xl"
+      padding="2.5"
+      width="breakpoint-sm"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Flex
-          direction="column"
-          gap="10px"
-          padding="20px"
-          align="left"
-        >
-          <Text fontWeight="bold" textStyle="2xl" color="#00146B">
+        <Flex direction="column" gap="2.5" padding="3.5" align="left">
+          <Heading fontWeight="bold" textStyle="3xl" color="#00146B">
             Покупка страхового полиса
-          </Text>
+          </Heading>
+
+          {/* Поле страны */}
           <Controller
             name="country"
             control={control}
             defaultValue=""
-            rules={{ required: 'Выберите страну' }}
+            rules={{ required: 'Это обязательное поле' }}
             render={({ field }) => <SelectCountryInput {...field} />}
           />
           {errors.country && (
-            <Text color="red.500">{'Это обязательное поле'}</Text>
+            <Text color="red.500">{errors.country.message}</Text>
           )}
+
+          {/* Поле типа покрытия */}
           <Controller
             name="coverageType"
             control={control}
@@ -57,6 +60,37 @@ const FirstStepForm = () => {
           {errors.coverageType && (
             <Text color="red.500">{errors.coverageType.message}</Text>
           )}
+
+          {/* Начало страхования */}
+          <Controller
+            name="startDate"
+            control={control}
+            defaultValue={null}
+            rules={{ required: 'Укажите начало страхования' }}
+            render={({ field }) => <SelectBiginDate {...field} />}
+          />
+          {errors.startDate && (
+            <Text color="red.500">{errors.startDate.message}</Text>
+          )}
+
+          {/* Конец страхования */}
+          <Controller
+            name="endDate"
+            control={control}
+            defaultValue={null}
+            rules={{
+              required: 'Укажите конец страхования',
+              validate: (value) =>
+                !value || value > control.getValues('startDate')
+                  ? true
+                  : 'Конец страхования не может быть раньше начала',
+            }}
+            render={({ field }) => <SelectEndDate {...field} />}
+          />
+          {errors.endDate && (
+            <Text color="red.500">{errors.endDate.message}</Text>
+          )}
+
           <Button
             borderRadius="xl"
             backgroundColor="#18BC50"

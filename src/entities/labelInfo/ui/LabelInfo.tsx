@@ -1,5 +1,5 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
-import { ToggleTip } from '@/shared/components/ui/toggle-tip';
+import { ToggleTip } from '@/shared/chakraComponents/ui/toggle-tip';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
 
 interface LabelInfoProps {

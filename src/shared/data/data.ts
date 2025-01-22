@@ -43,10 +43,6 @@ const activities: Activity[] = [
     name: 'Работа',
   },
   {
-    id: 3,
-    name: 'SPORT/WORK',
-  },
-  {
     id: 4,
     name: 'Учёба',
   },

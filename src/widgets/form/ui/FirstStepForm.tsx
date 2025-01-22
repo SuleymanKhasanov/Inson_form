@@ -1,9 +1,10 @@
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
+import { Controller, useForm } from 'react-hook-form';
 import { SelectCountryInput } from '@/features/selectCountry';
 import { CoverageType } from '@/features/coverageType';
-import { Controller, useForm } from 'react-hook-form';
-import SelectBiginDate from '@/features/selectBiginDate/ui/SelectBiginDate';
-import SelectEndDate from '@/features/selectEndDate/ui/SelectEndDate';
+import { SelectBiginDate } from '@/features/selectBiginDate';
+import { SelectEndDate } from '@/features/selectEndDate';
+import { SelectTarget } from '@/features/selectTarget';
 
 interface FormSubmitProps {
   country: string;
@@ -28,12 +29,12 @@ const FirstStepForm = () => {
       bg="#fff"
       shadow="md"
       borderRadius="4xl"
-      padding="2.5"
-      width="breakpoint-sm"
+      padding="3.5"
+      width="24em"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <Flex direction="column" gap="2.5" padding="3.5" align="left">
-          <Heading fontWeight="bold" textStyle="3xl" color="#00146B">
+          <Heading fontWeight="bold" textStyle="2xl" color="#00146B">
             Покупка страхового полиса
           </Heading>
 
@@ -80,16 +81,30 @@ const FirstStepForm = () => {
             defaultValue={null}
             rules={{
               required: 'Укажите конец страхования',
-              validate: (value) =>
-                !value || value > control.getValues('startDate')
+              validate: (value) => {
+                const startDate = control._getWatch('startDate');
+                return !value || !startDate || value > startDate
                   ? true
-                  : 'Конец страхования не может быть раньше начала',
+                  : 'Конец страхования не может быть раньше начала';
+              },
             }}
             render={({ field }) => <SelectEndDate {...field} />}
           />
           {errors.endDate && (
             <Text color="red.500">{errors.endDate.message}</Text>
           )}
+
+          {/* Поле типа покрытия (SelectTarget) */}
+          <Controller
+            name="coverageType"
+            control={control}
+            render={({ field }) => (
+              <SelectTarget
+                value="Туризм"
+                onChange={field.onChange}
+              />
+            )}
+          />
 
           <Button
             borderRadius="xl"

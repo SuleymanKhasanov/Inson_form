@@ -25,9 +25,15 @@ interface DateInputProps {
 }
 
 const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
-  const [day, setDay] = useState<number | ''>('');
-  const [month, setMonth] = useState<number>(0);
-  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [day, setDay] = useState<number | ''>(
+    value ? value.getDate() : '',
+  );
+  const [month, setMonth] = useState<number>(
+    value ? value.getMonth() + 1 : 0,
+  );
+  const [year, setYear] = useState<number>(
+    value ? value.getFullYear() : new Date().getFullYear(),
+  );
   const [daysInMonth, setDaysInMonth] = useState<number[]>([]);
 
   const days = createListCollection({
@@ -50,6 +56,13 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
   const yearsCollection = createListCollection({
     items: years,
   });
+
+  useEffect(() => {
+    if (day && month && year) {
+      const updatedDate = new Date(year, month - 1, day);
+      onChange(updatedDate);
+    }
+  }, [day, month, year, onChange]);
 
   return (
     <Flex gap="2.5">

@@ -1,13 +1,20 @@
-import { Container, Grid } from '@chakra-ui/react';
-import { FirstStepForm } from '../../widgets/form';
+import { Route, Routes } from 'react-router-dom';
+import PurchasingPolicy from '@/pages/purchasingPolicy/ui/PurchasingPolicy';
+import { ChooseProgram } from '@/pages/chooseProgram';
 
 function BaseLayout() {
   return (
-    <Container backgroundColor="#EAEFFA" height="100vh" width="100%">
-      <Grid templateColumns="repeat(2, 1fr)">
-        <FirstStepForm />
-      </Grid>
-    </Container>
+    <main
+      style={{
+        backgroundColor: '#EAEFFA',
+        minHeight: '100vh',
+      }}
+    >
+      <Routes>
+        <Route path="/" element={<PurchasingPolicy />} />
+        <Route path="/second-step" element={<ChooseProgram />} />
+      </Routes>
+    </main>
   );
 }
 

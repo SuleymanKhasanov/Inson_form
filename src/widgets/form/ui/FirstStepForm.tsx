@@ -1,16 +1,24 @@
-import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import { Controller, useForm } from 'react-hook-form';
 import { SelectCountryInput } from '@/features/selectCountry';
 import { CoverageType } from '@/features/coverageType';
 import { SelectBiginDate } from '@/features/selectBiginDate';
 import { SelectEndDate } from '@/features/selectEndDate';
 import { SelectTarget } from '@/features/selectTarget';
+import { PhoneNumber } from '@/features/phoneNumber';
+import { CardTitle } from '@/entities/cardTitle';
+import { CardSubtitle } from '@/entities/cardSubtitle';
+import { ProgressBar } from '@/entities/progressBar';
+import { Country } from '@/shared/model/countryInterface';
+import { useNavigate } from 'react-router-dom';
 
 interface FormSubmitProps {
-  country: string;
+  country: Country | null;
   coverageType: string;
   startDate: Date | null;
   endDate: Date | null;
+  target: string;
+  phoneNumber: string;
 }
 
 const FirstStepForm = () => {
@@ -20,31 +28,33 @@ const FirstStepForm = () => {
     formState: { errors },
   } = useForm<FormSubmitProps>();
 
+  const navigate = useNavigate();
+
   const onSubmit = (data: FormSubmitProps) => {
     console.log('Форма отправлена:', data);
+    localStorage.setItem('formData', JSON.stringify(data));
+    navigate('/second-step');
   };
 
   return (
-    <Box
-      bg="#fff"
-      shadow="md"
-      borderRadius="4xl"
-      padding="3.5"
-      width="24em"
-    >
+    <Box bg="#fff" shadow="md" borderRadius="4xl" padding="3.5">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Flex direction="column" gap="2.5" padding="3.5" align="left">
-          <Heading fontWeight="bold" textStyle="2xl" color="#00146B">
-            Покупка страхового полиса
-          </Heading>
+        <Flex direction="column" gap="3.5" padding="3.5" align="left">
+          <ProgressBar />
+          <CardTitle title="Покупка страхового полиса" />
 
           {/* Поле страны */}
           <Controller
             name="country"
             control={control}
-            defaultValue=""
-            rules={{ required: 'Это обязательное поле' }}
-            render={({ field }) => <SelectCountryInput {...field} />}
+            defaultValue={null}
+            rules={{ required: 'Выберете страну путешествий' }}
+            render={({ field }) => (
+              <SelectCountryInput
+                value={field.value}
+                onChange={(country) => field.onChange(country)}
+              />
+            )}
           />
           {errors.country && (
             <Text color="red.500">{errors.country.message}</Text>
@@ -54,7 +64,7 @@ const FirstStepForm = () => {
           <Controller
             name="coverageType"
             control={control}
-            defaultValue="singleTrip"
+            defaultValue="Однократное путешествие"
             rules={{ required: 'Выберите тип покрытия' }}
             render={({ field }) => <CoverageType {...field} />}
           />
@@ -94,17 +104,48 @@ const FirstStepForm = () => {
             <Text color="red.500">{errors.endDate.message}</Text>
           )}
 
-          {/* Поле типа покрытия (SelectTarget) */}
+          {/* Поле цедей путешествия */}
           <Controller
-            name="coverageType"
+            name="target" // Изменено имя на уникальное
             control={control}
+            defaultValue="Туризм"
+            rules={{ required: 'Выберите цель' }}
             render={({ field }) => (
               <SelectTarget
-                value="Туризм"
+                value={field.value}
                 onChange={field.onChange}
               />
             )}
           />
+          {errors.target && (
+            <Text color="red.500">{errors.target.message}</Text>
+          )}
+
+          {/* Поле номера телефона */}
+          <Controller
+            name="phoneNumber"
+            control={control}
+            defaultValue=""
+            rules={{
+              required: 'Укажите номер телефона',
+              validate: (value) => {
+                const phoneRegex = /^\+\d{1,4} \d{3} \d{2} \d{2}$/;
+                return (
+                  phoneRegex.test(value) ||
+                  'Введите корректный номер телефона'
+                );
+              },
+            }}
+            render={({ field }) => (
+              <PhoneNumber
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
+          {errors.phoneNumber && (
+            <Text color="red.500">{errors.phoneNumber.message}</Text>
+          )}
 
           <Button
             borderRadius="xl"
@@ -112,9 +153,12 @@ const FirstStepForm = () => {
             fontWeight="bold"
             width="100px"
             type="submit"
+            cursor="pointer"
           >
             Далее
           </Button>
+
+          <CardSubtitle />
         </Flex>
       </form>
     </Box>

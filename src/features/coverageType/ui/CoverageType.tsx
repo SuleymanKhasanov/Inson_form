@@ -29,8 +29,10 @@ const CoverageType = ({ value, onChange }: CoverageTypeProps) => {
         onChange={handleChange}
       >
         <Stack direction="column">
-          <Radio value="singleTrip">Однократное путешествие</Radio>
-          <Radio value="multipleTrips">
+          <Radio value="Однократное путешествие">
+            Однократное путешествие
+          </Radio>
+          <Radio value="Многократные путешествия">
             Многократные путешествия
           </Radio>
         </Stack>

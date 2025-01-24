@@ -18,7 +18,7 @@ const SelectTarget = ({ value, onChange }: CoverageTypeProps) => {
     onChange(event.target.value);
   };
   return (
-    <Flex direction="column">
+    <Flex direction="column" gap="2.5">
       <LabelInfo
         labelText="Цель"
         toggleInfo="Информация о количестве путегествий"

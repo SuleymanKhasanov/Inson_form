@@ -22,11 +22,30 @@ interface FormSubmitProps {
 }
 
 const FirstStepForm = () => {
+  const savedData = localStorage.getItem('formData');
+  const defaultValues = savedData
+    ? JSON.parse(savedData, (key, value) =>
+        key === 'startDate' || key === 'endDate'
+          ? new Date(value)
+          : value,
+      )
+    : {
+        country: null,
+        coverageType: 'Однократное путешествие',
+        startDate: null,
+        endDate: null,
+        target: 'Туризм',
+        phoneNumber: '',
+      };
+
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormSubmitProps>();
+    watch,
+  } = useForm<FormSubmitProps>({
+    defaultValues,
+  });
 
   const navigate = useNavigate();
 
@@ -36,19 +55,20 @@ const FirstStepForm = () => {
     navigate('/second-step');
   };
 
+  const startDate = watch('startDate');
+
   return (
     <Box bg="#fff" shadow="md" borderRadius="4xl" padding="3.5">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Flex direction="column" gap="3.5" padding="3.5" align="left">
-          <ProgressBar />
+          <ProgressBar value={1} />
           <CardTitle title="Покупка страхового полиса" />
 
           {/* Поле страны */}
           <Controller
             name="country"
             control={control}
-            defaultValue={null}
-            rules={{ required: 'Выберете страну путешествий' }}
+            rules={{ required: 'Выберите страну путешествий' }}
             render={({ field }) => (
               <SelectCountryInput
                 value={field.value}
@@ -64,7 +84,6 @@ const FirstStepForm = () => {
           <Controller
             name="coverageType"
             control={control}
-            defaultValue="Однократное путешествие"
             rules={{ required: 'Выберите тип покрытия' }}
             render={({ field }) => <CoverageType {...field} />}
           />
@@ -76,7 +95,6 @@ const FirstStepForm = () => {
           <Controller
             name="startDate"
             control={control}
-            defaultValue={null}
             rules={{ required: 'Укажите начало страхования' }}
             render={({ field }) => <SelectBiginDate {...field} />}
           />
@@ -88,11 +106,9 @@ const FirstStepForm = () => {
           <Controller
             name="endDate"
             control={control}
-            defaultValue={null}
             rules={{
               required: 'Укажите конец страхования',
               validate: (value) => {
-                const startDate = control._getWatch('startDate');
                 return !value || !startDate || value > startDate
                   ? true
                   : 'Конец страхования не может быть раньше начала';
@@ -104,11 +120,10 @@ const FirstStepForm = () => {
             <Text color="red.500">{errors.endDate.message}</Text>
           )}
 
-          {/* Поле цедей путешествия */}
+          {/* Поле цели путешествия */}
           <Controller
-            name="target" // Изменено имя на уникальное
+            name="target"
             control={control}
-            defaultValue="Туризм"
             rules={{ required: 'Выберите цель' }}
             render={({ field }) => (
               <SelectTarget
@@ -125,7 +140,6 @@ const FirstStepForm = () => {
           <Controller
             name="phoneNumber"
             control={control}
-            defaultValue=""
             rules={{
               required: 'Укажите номер телефона',
               validate: (value) => {

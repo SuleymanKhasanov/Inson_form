@@ -1,7 +1,18 @@
 import { Box, Button, Flex } from '@chakra-ui/react';
 import { IoArrowBackOutline } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
 
-const ProgressBar = () => {
+interface ProgressBarProps {
+  value: number;
+}
+
+const ProgressBar = ({ value }: ProgressBarProps) => {
+  const navigate = useNavigate();
+
+  const handleBackClick = () => {
+    navigate('/');
+  };
+
   return (
     <Flex gap="2.5" align="center">
       <Box
@@ -11,12 +22,17 @@ const ProgressBar = () => {
         borderRadius="xl"
       />
       <Box
-        backgroundColor="gray.200"
+        backgroundColor={value === 2 ? 'green.500' : 'gray.200'}
         width="50%"
         height="1.5"
         borderRadius="xl"
       />
-      <Button backgroundColor="gray.200" borderRadius="4xl" disabled>
+      <Button
+        backgroundColor={value === 2 ? 'blue.800' : 'gray.400'}
+        borderRadius="4xl"
+        disabled={value !== 2}
+        onClick={handleBackClick} // Используем обработчик
+      >
         <IoArrowBackOutline />
       </Button>
     </Flex>

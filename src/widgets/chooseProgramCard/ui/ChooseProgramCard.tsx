@@ -7,7 +7,7 @@ const ChooseProgramCard = () => {
   return (
     <Box bg="#fff" shadow="md" borderRadius="4xl" padding="3.5">
       <Flex direction="column" gap="3.5" padding="3.5" align="left">
-        <ProgressBar />
+        <ProgressBar value={2} />
         <CardTitle title="Выберите программу" />
         <ProgramCard />
       </Flex>
